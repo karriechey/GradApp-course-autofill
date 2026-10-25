@@ -1,0 +1,8 @@
+{
+  "form_url": "https://apply.example.edu/apply/frm?YOUR-FORM-ID",
+  "transcripts": [
+    {"path": "private/transcripts/college.pdf", "format": "semester-table", "institution": "Example Community College"},
+    {"path": "private/transcripts/university.pdf", "format": "campus-solutions", "institution": "Example University",
+     "term_months": {"Spring": 4}}
+  ]
+}

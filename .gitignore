@@ -1,0 +1,8 @@
+# Personal transcripts, course lists, login profile, progress and form captures
+private/
+/*.csv
+
+*.pdf
+.venv/
+__pycache__/
+.pytest_cache/

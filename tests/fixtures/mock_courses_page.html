@@ -1,0 +1,43 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Courses</title></head>
+<body>
+<h1>Courses</h1>
+<table class="table sortable"><thead>
+<tr><th>School Name</th><th>Course Name</th><th>Course Grade</th><th>Course Start</th></tr>
+<tr><td colspan="4"><a href="#" id="add">Add Course</a></td></tr>
+</thead><tbody id="rows"></tbody></table>
+<button type="button" id="continue" onclick="document.title='CONTINUE CLICKED'">Continue</button>
+
+<div id="dialog" role="dialog" aria-label="Subjects Taken" hidden>
+  <div>Subjects Taken</div>
+  <label for="inst">Institution</label>
+  <select id="inst"><option value=""></option><option value="u1">Example University</option><option value="c1">Example Community College</option></select>
+  <label for="name">Course Name</label><input id="name" type="text">
+  <label for="book">Textbook</label><input id="book" type="text">
+  <label>Course Start</label>
+  <select id="m" aria-label="Month"><option value=""></option><option value="01">January</option><option value="02">February</option><option value="08">August</option><option value="09">September</option></select>
+  <select id="y" aria-label="Year"><option value=""></option><option value="2026">2026</option><option value="2025">2025</option><option value="2022">2022</option></select>
+  <label for="grade">Grade on Transcript</label><input id="grade" type="text">
+  <button type="button" id="save">Save</button>
+  <button type="button" id="save_add_new">Save and Add Another</button>
+  <button type="button" id="cancel">Cancel</button>
+</div>
+<script>
+const dialog = document.getElementById('dialog');
+const field = (id) => document.getElementById(id);
+const reset = () => ['inst', 'name', 'book', 'm', 'y', 'grade'].forEach((id) => field(id).value = '');
+document.getElementById('add').onclick = (e) => { e.preventDefault(); reset(); dialog.hidden = false; };
+document.getElementById('cancel').onclick = () => { dialog.hidden = true; };
+const commit = () => {
+  if (!field('inst').value || !field('name').value || !field('m').value || !field('y').value) return false;
+  const tr = document.createElement('tr');
+  const school = field('inst').selectedOptions[0].text;
+  [school, field('name').value, field('grade').value, field('m').value + '/' + field('y').value]
+    .forEach((text) => { const td = document.createElement('td'); td.textContent = text; tr.appendChild(td); });
+  setTimeout(() => document.getElementById('rows').appendChild(tr), 300);
+  return true;
+};
+document.getElementById('save').onclick = () => { if (commit()) dialog.hidden = true; };
+document.getElementById('save_add_new').onclick = () => { if (commit()) reset(); };
+</script>
+</body></html>
