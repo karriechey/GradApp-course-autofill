@@ -88,7 +88,8 @@ def resolve(spec, data, maxlength, kind):
 def locate(scope, spec):
     if spec.get("selector"):
         return scope.locator(spec["selector"])
-    return scope.get_by_label(spec["label"], exact=True).nth(spec.get("nth", 0))
+    # nth counts visible matches only; popups keep hidden copies of fields for other choices.
+    return scope.get_by_label(spec["label"], exact=True).filter(visible=True).nth(spec.get("nth", 0))
 
 
 def highlight(locator):
@@ -189,6 +190,8 @@ def empty_required(page, dialog_title):
 def fill_repeat(page, repeat, profile, args, report):
     title = repeat["dialog_title"]
     entries = values.lookup(profile, repeat["profile"]) or []
+    if all("significance" in entry for entry in entries):
+        entries = sorted(entries, key=lambda entry: entry["significance"])
     listed = listed_column(page, repeat["list_column"])
     if listed is None:
         return report.add("error", title, repeat["list_column"], "list table not found on this page")
@@ -225,7 +228,7 @@ def fill_repeat(page, repeat, profile, args, report):
         page.wait_for_timeout(800)
         for spec in repeat["fields"]:
             field = locate(dialog, spec)
-            if not field.count():
+            if not field.count() or not field.is_visible():
                 continue  # fields that depend on an earlier choice, e.g. publication type
             apply_value(field, spec, entry, args, report, where)
             if spec.get("wait_after"):
@@ -235,7 +238,8 @@ def fill_repeat(page, repeat, profile, args, report):
             report.add("incomplete", where, "", f"required fields left empty: {missing}; popup cancelled")
             dialog.get_by_role("button", name="Cancel", exact=True).click()
             dialog.wait_for(state="hidden")
-            continue
+            # Stop here so a lower-ranked entry does not take this entry's slot.
+            return
         if not args.save:
             report.add("left_open", where, "", "popup filled and left open for review (no --save)")
             return "stop"
@@ -264,6 +268,7 @@ def run(args):
     page_map = mapping["pages"][args.page]
     report = Report()
     with attached_page(args.cdp_url, args.url_contains or mapping.get("url_contains")) as page:
+        page.set_default_timeout(10000)
         if page_map.get("url") and page_map["url"] not in page.url:
             page.goto(page_map["url"])
         settle(page)
@@ -280,6 +285,8 @@ def run(args):
                 continue
             apply_value(field.first if spec.get("kind") != "radio_group" else field, spec, profile, args, report, "page")
         for repeat in page_map.get("repeats", []):
+            if args.section and repeat["profile"] != args.section:
+                continue
             try:
                 if fill_repeat(page, repeat, profile, args, report) == "stop":
                     break
