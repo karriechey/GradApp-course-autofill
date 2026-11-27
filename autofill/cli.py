@@ -39,6 +39,7 @@ def main(argv=None):
     fill_parser.add_argument("--overwrite", action="store_true", help="replace values already in a field")
     fill_parser.add_argument("--save", action="store_true",
                              help="click Save in each completed popup; without it the first popup stays open for review")
+    fill_parser.add_argument("--section", help="only this list section, by its profile key, e.g. publications")
     fill_parser.add_argument("--limit", type=int, help="add at most this many list entries per section")
     fill_parser.add_argument("--cdp-url", default=DEFAULT_CDP_URL)
     fill_parser.add_argument("--url-contains")
