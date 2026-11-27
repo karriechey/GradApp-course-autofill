@@ -1,6 +1,6 @@
 # List every form field on the current portal page (all frames) and write it to an inventory JSON.
 # Read-only: records whether a field has a value, never the value itself.
-# Created: 2026-11-26  Last modified: 2026-11-26
+# Created: 2026-11-26  Last modified: 2026-11-27
 import json
 from collections import Counter
 from datetime import datetime
@@ -9,7 +9,7 @@ from pathlib import Path
 from autofill.browser import attached_page, settle
 
 DESCRIBE_FRAME_JS = r"""
-() => {
+(includeValues) => {
   const clean = (t) => (t || '').replace(/\s+/g, ' ').trim();
   const textOf = (el) => clean(el ? (el.innerText || el.textContent) : '');
   const visible = (el) => !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
@@ -130,6 +130,7 @@ DESCRIBE_FRAME_JS = r"""
         const entry = groups.get(el.name);
         entry.options.push({ value: el.value, text: ownLabel(el) || el.value });
         entry.has_value = entry.has_value || el.checked;
+        if (includeValues && el.checked) entry.value = [...(entry.value || []), ownLabel(el) || el.value];
         entry.visible = entry.visible || visible(el);
         continue;
       }
@@ -137,19 +138,25 @@ DESCRIBE_FRAME_JS = r"""
     const maxlength = el.maxLength > 0 ? el.maxLength : (parseInt(el.getAttribute('data-maxlength') || '', 10) || null);
     let options = null;
     let hasValue;
+    let value;
     if (kind === 'select' || kind === 'multiselect') {
       options = [...el.options].map((o) => ({ value: o.value, text: clean(o.text) }));
       hasValue = [...el.selectedOptions].some((o) => o.value !== '' && clean(o.text) !== '');
+      value = [...el.selectedOptions].map((o) => clean(o.text)).filter(Boolean).join('; ');
     } else if (kind === 'checkbox') {
       hasValue = el.checked;
+      value = el.checked;
     } else if (kind === 'richtext') {
       hasValue = textOf(el) !== '';
+      value = textOf(el);
     } else {
       hasValue = (el.value || '') !== '';
+      value = kind === 'file' || kind === 'password' ? '' : el.value;
     }
     fields.push({
       kind, label: labelOf(el), name: el.getAttribute('name') || '', id: el.id, selector: selectorOf(el),
       required: required(el), maxlength, options, has_value: hasValue, ...common(el),
+      ...(includeValues ? { value } : {}),
     });
   }
 
@@ -170,16 +177,24 @@ DESCRIBE_FRAME_JS = r"""
     .filter(visible)
     .map((d) => clean(d.getAttribute('aria-label')) || textOf(d.querySelector('h1, h2, h3, .ui-dialog-title')) || '(untitled)');
 
-  return { title: document.title, fields, add_controls: addControls, open_dialogs: dialogs };
+  // Lists of saved entries (jobs, awards, ...) are tables; their cells are the only place those values show.
+  const tables = includeValues ? [...document.querySelectorAll('table')].filter(visible).map((t) => ({
+    section: sectionOf(t),
+    columns: [...t.querySelectorAll('th')].map(textOf),
+    rows: [...t.querySelectorAll('tbody > tr')].filter(visible).map((r) => [...r.children].map(textOf)),
+  })).filter((t) => t.rows.length) : [];
+  const text = includeValues ? textOf(document.body) : undefined;
+
+  return { title: document.title, fields, add_controls: addControls, open_dialogs: dialogs, tables, text };
 }
 """
 
 
-def describe_frames(page):
+def describe_frames(page, include_values=False):
     frames = []
     for index, frame in enumerate(page.frames):
         try:
-            described = frame.evaluate(DESCRIBE_FRAME_JS)
+            described = frame.evaluate(DESCRIBE_FRAME_JS, include_values)
         except Exception as error:
             frames.append({"index": index, "name": frame.name, "url": frame.url, "error": str(error)})
             continue
