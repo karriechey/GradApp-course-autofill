@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Application: Experience</title></head>
+<body>
+<h1>Experience</h1>
+
+<h2>Contact</h2>
+<div class="form_question required" data-required="1">
+  <div class="form_label"><label for="form_phone">Mobile Phone</label></div>
+  <div class="form_responses"><input id="form_phone" name="form_phone" type="tel" maxlength="20" value="555 0100"></div>
+</div>
+<div class="form_question">
+  <div class="form_label">Citizenship Status</div>
+  <div class="form_responses">
+    <input type="radio" id="cit1" name="form_cit" value="1"><label for="cit1">U.S. Citizen</label>
+    <input type="radio" id="cit2" name="form_cit" value="2"><label for="cit2">Permanent Resident</label>
+    <input type="radio" id="cit3" name="form_cit" value="3"><label for="cit3">International</label>
+  </div>
+</div>
+<div class="form_question">
+  <div class="form_label"><label for="form_country">Country</label></div>
+  <div class="form_responses"><select id="form_country" name="form_country">
+    <option value=""></option><option value="US">United States</option><option value="CA">Canada</option>
+  </select></div>
+</div>
+
+<h2>Employment</h2>
+<table><thead><tr><th>Organization</th><th>Position</th><th>Dates</th></tr>
+<tr><td colspan="3"><a href="#" id="add_job">Add Employment</a></td></tr></thead>
+<tbody><tr><td>Example Labs</td><td>Engineer</td><td>07/2022</td></tr></tbody></table>
+
+<h2>Honors</h2>
+<div class="repeat_block" data-index="0">
+  <label for="honor_0">Honor Title</label><input id="honor_0" name="honor_title_0">
+</div>
+<button type="button">Add Another Honor</button>
+
+<div role="dialog" aria-label="Employment" hidden>
+  <label for="org">Organization</label><input id="org" maxlength="64">
+  <label for="desc">Description</label><textarea id="desc" maxlength="500"></textarea>
+  <select aria-label="Month"><option></option><option value="07">July</option></select>
+  <select aria-label="Year"><option></option><option value="2022">2022</option></select>
+</div>
+
+<iframe name="recs" srcdoc='<h3>Recommenders</h3><label for="rec_email">Recommender Email</label><input id="rec_email" type="email" required>'></iframe>
+</body></html>
