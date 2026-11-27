@@ -1,8 +1,8 @@
-# Command line: autofill discover | map | fill
-# Created: 2026-11-26  Last modified: 2026-11-26
+# Command line: autofill discover | extract | map | fill
+# Created: 2026-11-26  Last modified: 2026-11-27
 import argparse
 
-from autofill import discover
+from autofill import discover, extract
 from autofill.browser import DEFAULT_CDP_URL
 
 
@@ -19,6 +19,15 @@ def main(argv=None):
     discover_parser.add_argument("--no-snapshot", dest="snapshot", action="store_false",
                                  help="skip saving the page HTML and screenshot next to the inventory")
     discover_parser.set_defaults(handler=discover.run)
+
+    extract_parser = commands.add_parser("extract", help="read the values on a finished application page")
+    extract_parser.add_argument("--school", required=True)
+    extract_parser.add_argument("--page", help="file name for this page; defaults to the page heading")
+    extract_parser.add_argument("--url", help="open this URL in the tab first")
+    extract_parser.add_argument("--out-dir", default="private/extracted")
+    extract_parser.add_argument("--cdp-url", default=DEFAULT_CDP_URL)
+    extract_parser.add_argument("--url-contains", help="pick the tab whose URL contains this text")
+    extract_parser.set_defaults(handler=extract.run)
 
     args = parser.parse_args(argv)
     args.handler(args)
