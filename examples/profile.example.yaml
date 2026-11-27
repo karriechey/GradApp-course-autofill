@@ -1,0 +1,149 @@
+# Invented example profile. Copy to private/profile.yaml and replace every value.
+# Dates are ISO (YYYY-MM or YYYY-MM-DD); end: null means present.
+# Text keys may have length variants: <key>_150, <key>_500, <key>_full. The filler picks the shortest that fits.
+# Created: 2026-11-26  Last modified: 2026-11-26
+
+personal:
+  name: {first: Jane, middle: Quinn, last: Doe, preferred: Jane, suffix: ""}
+  former_names: []
+  birth_date: 1999-04-12
+  email: jane.doe@example.com
+  phone: {mobile: "+1 555 555 0100", home: ""}
+  address:
+    street: 1 Example Street
+    street2: Apt 2
+    city: Springfield
+    state: Illinois
+    postal_code: "62701"
+    country: United States
+  website: https://example.com
+  linkedin: https://www.linkedin.com/in/example
+
+demographics:
+  sex: Female
+  gender_identity: decline
+  pronouns: she/her
+  hispanic_latino: "no"
+  race: [Asian]
+  citizenship:
+    status: us_citizen          # us_citizen, permanent_resident, international
+    countries: [United States]
+    birth_country: United States
+  first_generation: "no"
+  veteran: "no"
+  disability: decline
+  native_english: "yes"
+
+education:
+  - institution: Example University
+    city: Chicago
+    state: Illinois
+    country: United States
+    level: undergraduate
+    degree: Bachelor of Science
+    major: Computer Science
+    minor: Mathematics
+    start: 2018-09
+    end: 2022-06
+    degree_date: 2022-06
+    degree_status: awarded      # awarded, expected, none
+    gpa: "3.80"
+    gpa_scale: "4.00"
+    honors_150: Example honor roll, all terms
+    transcript_file: private/transcripts/example_university.pdf
+  - institution: Example Community College
+    city: Springfield
+    state: Illinois
+    country: United States
+    level: undergraduate
+    degree: Associate of Science
+    major: Physics
+    start: 2016-08
+    end: 2018-05
+    degree_date: 2018-05
+    degree_status: awarded
+    gpa: "3.90"
+    gpa_scale: "4.00"
+
+employment:
+  - organization: Example Labs
+    title: Software Engineer
+    city: Chicago
+    state: Illinois
+    country: United States
+    start: 2022-07
+    end: null
+    hours_per_week: 40
+    supervisor: Example Supervisor
+    description_150: Built data pipelines for sensor experiments.
+    description_500: >-
+      Built and maintained data pipelines for sensor experiments, cut processing time by half,
+      and wrote the lab's internal analysis library.
+    description_full: >-
+      Built and maintained data pipelines for sensor experiments, cut processing time by half,
+      wrote the lab's internal analysis library, and trained three new hires on the codebase.
+
+research:
+  - organization: Example University Physics Department
+    lab: Example Quantum Lab
+    advisor: Example Advisor
+    title: Undergraduate Researcher
+    topic: Neural decoders for error correcting codes
+    city: Chicago
+    country: United States
+    start: 2021-01
+    end: 2022-06
+    hours_per_week: 15
+    description_150: Trained small recurrent networks to decode simulated syndrome data.
+    description_500: >-
+      Trained small recurrent networks to decode simulated syndrome data and compared them with a
+      matching decoder across code distances.
+
+honors:
+  - title: Example Merit Scholarship
+    issuer: Example University
+    date: 2020-05
+    level: university           # department, university, regional, national, international
+    description_150: Awarded to five students per year for academic merit.
+
+publications:
+  - type: conference            # journal, conference, preprint, poster, talk
+    title: An Example Paper Title
+    authors: J. Doe, A. Example
+    venue: Example Conference on Computing
+    date: 2024-03
+    status: published           # published, accepted, submitted, in_preparation
+    doi: 10.0000/example.0000
+    url: https://example.com/paper
+    citation_full: "J. Doe, A. Example. An Example Paper Title. Example Conference on Computing, 2024."
+
+presentations:
+  - title: An Example Poster
+    event: Example Undergraduate Research Symposium
+    date: 2022-04
+    type: poster
+
+test_scores:
+  gre: {date: 2025-10-01, verbal: 160, verbal_pct: 85, quant: 168, quant_pct: 90, writing: 4.5, writing_pct: 80}
+  toefl: null
+
+recommenders:
+  - prefix: Dr.
+    first: Alex
+    last: Example
+    title: Professor
+    organization: Example University
+    department: Physics
+    email: alex.example@example.edu
+    phone: "+1 555 555 0101"
+    relationship: Research advisor
+    known_since: 2021-01
+    waive_access: "yes"
+
+short_answers:
+  research_interests_150: Machine learning decoders for quantum error correction on FPGAs.
+  research_interests_500: >-
+    Machine learning decoders for quantum error correction, with a focus on models small and fast enough
+    to run on FPGAs next to the quantum hardware.
+  faculty_of_interest: Example Professor One, Example Professor Two
+  how_heard: Department website
